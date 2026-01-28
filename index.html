@@ -136,6 +136,15 @@
             margin-bottom: 20px;
             text-align: left;
         }
+        /* 新增：愿望文字的样式（居中、更大字体） */
+        .wish-text {
+            color: var(--pink-red);
+            font-size: 20px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
         .close-popup {
             background: var(--pink-deep);
             color: var(--white);
@@ -172,67 +181,6 @@
             60% { transform: scale(1); }
         }
 
-        /* 照片弹窗（保留双照片切换功能） */
-        .photo-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 99;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-        .photo-popup.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .popup-photo {
-            width: 85%;
-            max-width: 400px;
-            border-radius: 20px;
-            border: 5px solid var(--white);
-            transform: scale(0.8);
-            animation: photo-scale 0.6s ease forwards;
-            object-fit: cover;
-        }
-        .popup-photo::after {
-            content: "💖 专属照片加载中 💖";
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 200px;
-            color: var(--pink-red);
-            font-size: 18px;
-        }
-        @keyframes photo-scale {
-            to { transform: scale(1); }
-        }
-        .close-photo {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: var(--white);
-            font-size: 30px;
-            cursor: pointer;
-            padding: 10px;
-        }
-        .photo-tip {
-            position: absolute;
-            bottom: 30px;
-            color: var(--white);
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
-
         /* 卡片标题（保留原有样式） */
         .card-title {
             background: linear-gradient(90deg, var(--pink-red), var(--pink-deep));
@@ -261,7 +209,7 @@
         <div class="heart-btn" id="heartBtn">❤️</div>
     </div>
 
-    <!-- 安慰文字弹窗（保留原有暖心文案） -->
+    <!-- 安慰文字弹窗（保留原有暖心文案：点击💌/🎁触发） -->
     <div class="text-popup" id="textPopup">
         <div class="popup-content">
             <p class="comfort-text">
@@ -279,21 +227,15 @@
         </div>
     </div>
 
-    <!-- 照片弹窗（保留双照片切换） -->
-    <div class="photo-popup" id="photoPopup">
-        <div class="close-photo" id="closePhotoBtn">✕</div>
-        <img src="https://i.imgur.com/4IZ8tel.jpg" class="popup-photo" id="popupPhoto" alt="专属惊喜" onerror="this.src='https://picsum.photos/400/600'">
-        <div class="photo-tip">点击照片切换另一张 💌</div>
+    <!-- 新增：愿望文字弹窗（点击爱心按钮触发） -->
+    <div class="text-popup" id="wishPopup">
+        <div class="popup-content">
+            <p class="wish-text">满足你一个小愿望，想要什么礼物告诉我哦～</p>
+            <button class="close-popup" id="closeWishBtn">收到啦 💝</button>
+        </div>
     </div>
 
     <script>
-        // 照片数组（保留原有两张照片）
-        const photoUrls = [
-            'https://i.imgur.com/4IZ8tel.jpg',
-            'https://i.imgur.com/OblVTN3.jpg'
-        ];
-        let currentPhotoIndex = 0;
-
         // 生成掉落元素（💌+🎁，更密集、速度更慢）
         function createFallingItems() {
             // 每300ms生成一个（原800ms，更小更密集）
@@ -331,30 +273,26 @@
             }, 300); // 生成间隔从800ms改为300ms，更密集
         }
 
-        // 原有交互逻辑全部保留
+        // 原有交互逻辑（保留暖心文案弹窗）
         const textPopup = document.getElementById('textPopup');
         const closeTextBtn = document.getElementById('closeTextBtn');
+        // 新增：愿望弹窗相关元素
+        const wishPopup = document.getElementById('wishPopup');
+        const closeWishBtn = document.getElementById('closeWishBtn');
         const heartBtn = document.getElementById('heartBtn');
-        const photoPopup = document.getElementById('photoPopup');
-        const closePhotoBtn = document.getElementById('closePhotoBtn');
-        const popupPhoto = document.getElementById('popupPhoto');
 
+        // 关闭暖心文案弹窗
         closeTextBtn.addEventListener('click', () => textPopup.classList.remove('show'));
         textPopup.addEventListener('click', (e) => e.target === textPopup && textPopup.classList.remove('show'));
 
+        // 关闭愿望弹窗
+        closeWishBtn.addEventListener('click', () => wishPopup.classList.remove('show'));
+        wishPopup.addEventListener('click', (e) => e.target === wishPopup && wishPopup.classList.remove('show'));
+
+        // 修改：爱心按钮点击触发愿望弹窗（不再触发照片弹窗）
         heartBtn.addEventListener('click', () => {
             if (navigator.vibrate) navigator.vibrate(200);
-            photoPopup.classList.add('show');
-        });
-
-        closePhotoBtn.addEventListener('click', () => photoPopup.classList.remove('show'));
-        photoPopup.addEventListener('click', (e) => e.target === photoPopup && photoPopup.classList.remove('show'));
-
-        popupPhoto.addEventListener('click', (e) => {
-            e.stopPropagation();
-            currentPhotoIndex = (currentPhotoIndex + 1) % photoUrls.length;
-            popupPhoto.src = photoUrls[currentPhotoIndex];
-            if (navigator.vibrate) navigator.vibrate(100);
+            wishPopup.classList.add('show');
         });
 
         // 页面加载启动掉落效果
