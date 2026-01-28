@@ -1,1 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="transparent">
+    <title>致我的宝贝 💌</title>
+    <style>
+        /* 全局重置+少女风粉色渐变变量（保留原有样式） */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-smoothing: antialiased;
+            -webkit-font-smoothing: antialiased;
+        }
+        :root {
+            --pink-light: #ffe8f0;    /* 浅粉 */
+            --pink-main: #ffccd5;     /* 蜜桃粉 */
+            --pink-deep: #ff99bb;     /* 深粉 */
+            --pink-red: #e66799;      /* 玫粉 */
+            --white: #ffffff;         /* 纯白 */
+            --shadow: rgba(255, 105, 180, 0.2); /* 粉色阴影 */
+        }
+        body {
+            background: linear-gradient(135deg, var(--pink-light) 0%, var(--pink-main) 50%, var(--pink-deep) 100%);
+            font-family: "PingFang SC", "微软雅黑", sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+            touch-action: manipulation;
+        }
 
+        /* 背景信封投递动画（保留原有💌样式） */
+        .bg-envelope {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 80px;
+            z-index: 1;
+            animation: envelope-deliver 6s ease forwards;
+        }
+        @keyframes envelope-deliver {
+            0% { top: -100px; opacity: 0; transform: translateX(-50%) scale(0.8); }
+            20% { top: 30%; opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { top: 30%; opacity: 1; transform: translateX(-50%) scale(1.2); }
+            80% { top: 30%; opacity: 0.5; transform: translateX(-50%) scale(1); }
+            100% { top: 30%; opacity: 0; transform: translateX(-50%) scale(0.8); }
+        }
+
+        /* 掉落元素（💌+🎁）通用样式 - 仅调整动画速度 */
+        .falling-item {
+            position: absolute;
+            font-size: 30px;
+            pointer-events: auto;
+            cursor: pointer;
+            animation: envelope-fall linear infinite;
+            z-index: 2;
+            filter: drop-shadow(0 2px 4px var(--shadow));
+        }
+        /* 掉落动画：速度更慢（时长加长） */
+        @keyframes envelope-fall {
+            0% {
+                transform: translateY(-50px) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* 核心卡片（保留原有样式） */
+        .main-card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px 25px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 40px var(--shadow);
+            z-index: 10;
+        }
+
+        /* 安慰文字弹窗（保留原有暖心文案） */
+        .text-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255, 232, 240, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 90;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .text-popup.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .popup-content {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px 20px;
+            width: 85%;
+            max-width: 350px;
+            box-shadow: 0 8px 30px var(--shadow);
+            transform: scale(0.8);
+            animation: popup-scale 0.5s ease forwards;
+        }
+        @keyframes popup-scale {
+            to { transform: scale(1); }
+        }
+        .comfort-text {
+            color: var(--pink-red);
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .close-popup {
+            background: var(--pink-deep);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .close-popup:active {
+            background: var(--pink-red);
+            transform: scale(0.95);
+        }
+
+        /* 爱心按钮（保留原有跳动效果） */
+        .heart-btn {
+            font-size: 45px;
+            color: var(--pink-red);
+            margin: 30px 0;
+            cursor: pointer;
+            animation: heart-beat 3s ease infinite;
+            filter: drop-shadow(0 3px 8px var(--shadow));
+            transition: transform 0.3s ease;
+        }
+        .heart-btn:active {
+            transform: scale(1.2);
+        }
+        @keyframes heart-beat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.2); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.3); }
+            60% { transform: scale(1); }
+        }
+
+        /* 照片弹窗（保留双照片切换功能） */
+        .photo-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .photo-popup.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .popup-photo {
+            width: 85%;
+            max-width: 400px;
+            border-radius: 20px;
+            border: 5px solid var(--white);
+            transform: scale(0.8);
+            animation: photo-scale 0.6s ease forwards;
+            object-fit: cover;
+        }
+        .popup-photo::after {
+            content: "💖 专属照片加载中 💖";
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 200px;
+            color: var(--pink-red);
+            font-size: 18px;
+        }
+        @keyframes photo-scale {
+            to { transform: scale(1); }
+        }
+        .close-photo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--white);
+            font-size: 30px;
+            cursor: pointer;
+            padding: 10px;
+        }
+        .photo-tip {
+            position: absolute;
+            bottom: 30px;
+            color: var(--white);
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        /* 卡片标题（保留原有样式） */
+        .card-title {
+            background: linear-gradient(90deg, var(--pink-red), var(--pink-deep));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .card-subtitle {
+            color: var(--pink-red);
+            font-size: 16px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景信封投递动画（保留原有💌） -->
+    <div class="bg-envelope">💌</div>
+
+    <!-- 核心卡片：仅标题添加🎀，其余不变 -->
+    <div class="main-card">
+        <h1 class="card-title">🎀 致我的宝贝 💌 🎀</h1>
+        <div class="heart-btn" id="heartBtn">❤️</div>
+    </div>
+
+    <!-- 安慰文字弹窗（保留原有暖心文案） -->
+    <div class="text-popup" id="textPopup">
+        <div class="popup-content">
+            <p class="comfort-text">
+                宝贝，看你为论文这么呕心沥血，我真的很心疼。<br><br>
+                我知道‘顶刊’两个字背后，是无数个沉默的、反复推翻又重来的日子。<br>
+                我不太懂你那些复杂的数据和模型，但我懂你追求极致的那份心。<br><br>
+                我崇拜的，就是你身上这股子‘愚公移山’般的学术韧劲。<br>
+                在我心里，你早就是那座山了。<br><br>
+                现在，你什么都别多想。我就是你的后勤部长。<br>
+                饿了告诉我，我给你弄吃的；累了就歇会儿，我陪你散步/给你揉揉肩。<br>
+                咱们的小目标不是一口气登顶，而是稳稳地走好当下的每一步。<br>
+                你已经做得超乎想象了，我特别为你骄傲。
+            </p>
+            <button class="close-popup" id="closeTextBtn">收下安慰 💓</button>
+        </div>
+    </div>
+
+    <!-- 照片弹窗（保留双照片切换） -->
+    <div class="photo-popup" id="photoPopup">
+        <div class="close-photo" id="closePhotoBtn">✕</div>
+        <img src="https://i.imgur.com/4IZ8tel.jpg" class="popup-photo" id="popupPhoto" alt="专属惊喜" onerror="this.src='https://picsum.photos/400/600'">
+        <div class="photo-tip">点击照片切换另一张 💌</div>
+    </div>
+
+    <script>
+        // 照片数组（保留原有两张照片）
+        const photoUrls = [
+            'https://i.imgur.com/4IZ8tel.jpg',
+            'https://i.imgur.com/OblVTN3.jpg'
+        ];
+        let currentPhotoIndex = 0;
+
+        // 生成掉落元素（💌+🎁，更密集、速度更慢）
+        function createFallingItems() {
+            // 每300ms生成一个（原800ms，更小更密集）
+            setInterval(() => {
+                const item = document.createElement('div');
+                item.className = 'falling-item';
+                
+                // 随机选择💌或🎁掉落
+                const items = ['💌', '🎁'];
+                item.textContent = items[Math.floor(Math.random() * items.length)];
+                
+                // 随机位置（5%-95%）
+                const left = Math.random() * 90 + 5;
+                item.style.left = `${left}vw`;
+                
+                // 掉落时长8-15秒（原3-8秒，更大速度更慢）
+                const duration = Math.random() * 7 + 8;
+                item.style.animationDuration = `${duration}s`;
+                
+                // 随机大小（20-40px）
+                const size = Math.random() * 20 + 20;
+                item.style.fontSize = `${size}px`;
+                
+                // 点击💌/🎁触发文字弹窗（保留原有交互）
+                item.addEventListener('click', () => {
+                    if (navigator.vibrate) navigator.vibrate(150);
+                    textPopup.classList.add('show');
+                    item.style.animationPlayState = 'paused';
+                    setTimeout(() => item.style.animationPlayState = 'running', 1000);
+                });
+                
+                document.body.appendChild(item);
+                // 动画结束后移除元素
+                setTimeout(() => item.remove(), duration * 1000);
+            }, 300); // 生成间隔从800ms改为300ms，更密集
+        }
+
+        // 原有交互逻辑全部保留
+        const textPopup = document.getElementById('textPopup');
+        const closeTextBtn = document.getElementById('closeTextBtn');
+        const heartBtn = document.getElementById('heartBtn');
+        const photoPopup = document.getElementById('photoPopup');
+        const closePhotoBtn = document.getElementById('closePhotoBtn');
+        const popupPhoto = document.getElementById('popupPhoto');
+
+        closeTextBtn.addEventListener('click', () => textPopup.classList.remove('show'));
+        textPopup.addEventListener('click', (e) => e.target === textPopup && textPopup.classList.remove('show'));
+
+        heartBtn.addEventListener('click', () => {
+            if (navigator.vibrate) navigator.vibrate(200);
+            photoPopup.classList.add('show');
+        });
+
+        closePhotoBtn.addEventListener('click', () => photoPopup.classList.remove('show'));
+        photoPopup.addEventListener('click', (e) => e.target === photoPopup && photoPopup.classList.remove('show'));
+
+        popupPhoto.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentPhotoIndex = (currentPhotoIndex + 1) % photoUrls.length;
+            popupPhoto.src = photoUrls[currentPhotoIndex];
+            if (navigator.vibrate) navigator.vibrate(100);
+        });
+
+        // 页面加载启动掉落效果
+        window.addEventListener('load', createFallingItems);
+    </script>
+</body>
+</html>
